@@ -74,6 +74,8 @@
       </div>
     </div>
 
+    <!-- New Section for Attaching Photo -->
+
     <!-- Verification Sections (loop over different sections) -->
     <div
       v-for="(section, sectionKey) in sections"
@@ -172,6 +174,38 @@
       </div>
     </div>
 
+    <!-- New Section for Attaching Photo -->
+    <!-- Attach a Photo Section -->
+    <div class="mb-6 bg-white p-4 rounded-lg shadow-sm">
+      <label class="block font-medium text-gray-700">Attach a Photo</label>
+      <input
+        type="file"
+        accept="image/*"
+        @change="onFileChange"
+        class="w-full border rounded p-2 focus:ring focus:ring-blue-300"
+      />
+      <p v-if="photo" class="text-gray-500 text-sm mt-2">
+        Selected File: {{ photo.name }}
+      </p>
+
+      <!-- Image Preview with Remove Button -->
+      <div v-if="imagePreview" class="relative mt-4 inline-block">
+        <img
+          :src="imagePreview"
+          alt="Image Preview"
+          class="w-32 h-32 object-cover rounded-lg shadow-md border"
+        />
+        <button
+          @click="removeImage"
+          class="absolute top-0 right-0 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold shadow-md hover:bg-red-700"
+          title="Remove Image"
+        >
+          ✕
+        </button>
+      </div>
+
+      <p v-if="errors.photo" class="text-red-500 text-sm">{{ errors.photo }}</p>
+    </div>
     <!-- Submit button to submit the form -->
     <button
       type="submit"
@@ -202,10 +236,12 @@ export default {
         { label: "Meter Serial Number", value: "" },
         { label: "Meter Size (mm)", value: "" },
         { label: "Work Order Number", value: "" },
-        { label: "Installation Date", value: "" },
+        { label: "Installation Date", value: "", type: "date" },
         { label: "Installed by (Contractor Name)", value: "" },
         { label: "Meter Type (AMR/AMI)", value: "" },
       ],
+      photo: null, // Store the selected photo file
+      imagePreview: null, // Store image preview URL
       sections: {
         physicalVerification: {
           label: "Physical Site Verification",
@@ -291,6 +327,7 @@ export default {
       },
       errors: {
         generalDetails: {},
+        photo: "",
         physicalVerification: { fields: {} },
         communicationIntegration: { fields: {} },
         customerEngagement: { fields: {} },
@@ -305,10 +342,23 @@ export default {
     toggleSection(sectionKey) {
       this.sections[sectionKey].expanded = !this.sections[sectionKey].expanded;
     },
+    onFileChange(event) {
+      const file = event.target.files[0];
+      if (file) {
+        this.photo = file;
+        this.imagePreview = URL.createObjectURL(file);
+      }
+    },
+
+    removeImage() {
+      this.photo = null;
+      this.imagePreview = null;
+    },
     validateForm() {
       let isValid = true;
       this.errors = {
         generalDetails: {},
+        photo: "",
         physicalVerification: { fields: {} },
         communicationIntegration: { fields: {} },
         customerEngagement: { fields: {} },
@@ -334,16 +384,11 @@ export default {
         }
       });
 
-      // Section Field Validation
-      Object.keys(this.sections).forEach((sectionKey) => {
-        this.sections[sectionKey].fields.forEach((field, key) => {
-          if (!field.value) {
-            this.errors[sectionKey] = this.errors[sectionKey] || { fields: {} };
-            this.errors[sectionKey].fields[key] = "This field is required.";
-            isValid = false;
-          }
-        });
-      });
+      // Photo Validation
+      if (!this.photo) {
+        this.errors.photo = "Photo is required.";
+        isValid = false;
+      }
 
       return isValid;
     },
@@ -354,30 +399,15 @@ export default {
 
       this.loading = true;
       setTimeout(() => {
-        console.log("Form submitted", this.generalDetails, this.sections);
+        console.log(
+          "Form submitted",
+          this.generalDetails,
+          this.sections,
+          this.photo
+        );
         this.loading = false;
       }, 2000); // Simulate a network request delay
     },
-    getLocation() {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            this.generalDetails[2].latitude = position.coords.latitude;
-            this.generalDetails[2].longitude = position.coords.longitude;
-          },
-          (error) => {
-            console.error("Error getting location", error);
-            alert("Unable to retrieve your location.");
-          }
-        );
-      } else {
-        alert("Geolocation is not supported by this browser.");
-      }
-    },
-  },
-  mounted() {
-    // Call getLocation when the component is mounted to fill latitude and longitude
-    this.getLocation();
   },
 };
 </script>
