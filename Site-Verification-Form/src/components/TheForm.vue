@@ -20,7 +20,9 @@
 
       <div v-if="generalDetailsExpanded" class="mt-3">
         <div v-for="(field, key) in generalDetails" :key="key" class="mb-3">
-          <label class="block font-medium text-gray-700">{{ field.label }}</label>
+          <label class="block font-medium text-gray-700">{{
+            field.label
+          }}</label>
           <div v-if="field.type === 'gps'">
             <div class="flex space-x-4">
               <div class="w-full">
@@ -29,10 +31,15 @@
                   v-model="field.latitude"
                   type="text"
                   class="w-full border rounded p-2 focus:ring focus:ring-blue-300"
-                  :class="{'border-red-500': errors.generalDetails.latitude}"
+                  :class="{ 'border-red-500': errors.generalDetails.latitude }"
                   readonly
                 />
-                <p v-if="errors.generalDetails.latitude" class="text-red-500 text-sm">{{ errors.generalDetails.latitude }}</p>
+                <p
+                  v-if="errors.generalDetails.latitude"
+                  class="text-red-500 text-sm"
+                >
+                  {{ errors.generalDetails.latitude }}
+                </p>
               </div>
               <div class="w-full">
                 <label class="block font-medium text-gray-700">Longitude</label>
@@ -40,10 +47,15 @@
                   v-model="field.longitude"
                   type="text"
                   class="w-full border rounded p-2 focus:ring focus:ring-blue-300"
-                  :class="{'border-red-500': errors.generalDetails.longitude}"
+                  :class="{ 'border-red-500': errors.generalDetails.longitude }"
                   readonly
                 />
-                <p v-if="errors.generalDetails.longitude" class="text-red-500 text-sm">{{ errors.generalDetails.longitude }}</p>
+                <p
+                  v-if="errors.generalDetails.longitude"
+                  class="text-red-500 text-sm"
+                >
+                  {{ errors.generalDetails.longitude }}
+                </p>
               </div>
             </div>
           </div>
@@ -52,9 +64,11 @@
               v-model="field.value"
               type="text"
               class="w-full border rounded p-2 focus:ring focus:ring-blue-300"
-              :class="{'border-red-500': errors.generalDetails[key]}"
+              :class="{ 'border-red-500': errors.generalDetails[key] }"
             />
-            <p v-if="errors.generalDetails[key]" class="text-red-500 text-sm">{{ errors.generalDetails[key] }}</p>
+            <p v-if="errors.generalDetails[key]" class="text-red-500 text-sm">
+              {{ errors.generalDetails[key] }}
+            </p>
           </div>
         </div>
       </div>
@@ -76,7 +90,9 @@
 
       <div v-if="section.expanded" class="mt-3">
         <div v-for="(field, key) in section.fields" :key="key" class="mb-3">
-          <label class="block font-medium text-gray-700">{{ field.label }}</label>
+          <label class="block font-medium text-gray-700">{{
+            field.label
+          }}</label>
           <div class="flex items-center space-x-4">
             <label class="flex items-center space-x-2">
               <input
@@ -97,12 +113,19 @@
               <span>No</span>
             </label>
           </div>
-          <p v-if="errors[sectionKey]?.fields?.[key]" class="text-red-500 text-sm">{{ errors[sectionKey]?.fields?.[key] }}</p>
+          <p
+            v-if="errors[sectionKey]?.fields?.[key]"
+            class="text-red-500 text-sm"
+          >
+            {{ errors[sectionKey]?.fields?.[key] }}
+          </p>
         </div>
 
         <!-- Additional Notes Fields -->
         <div v-if="sectionKey === 'physicalVerification'" class="mt-4">
-          <label class="block font-medium text-gray-700">Additional Notes</label>
+          <label class="block font-medium text-gray-700"
+            >Additional Notes</label
+          >
           <textarea
             v-model="section.notes"
             class="w-full border rounded p-2 focus:ring focus:ring-blue-300"
@@ -112,7 +135,9 @@
         </div>
 
         <div v-if="sectionKey === 'communicationIntegration'" class="mt-4">
-          <label class="block font-medium text-gray-700">Communication Notes</label>
+          <label class="block font-medium text-gray-700"
+            >Communication Notes</label
+          >
           <textarea
             v-model="section.communicationNotes"
             class="w-full border rounded p-2 focus:ring focus:ring-blue-300"
@@ -122,7 +147,9 @@
         </div>
 
         <div v-if="sectionKey === 'customerEngagement'" class="mt-4">
-          <label class="block font-medium text-gray-700">Engagement Notes</label>
+          <label class="block font-medium text-gray-700"
+            >Engagement Notes</label
+          >
           <textarea
             v-model="section.engagementNotes"
             class="w-full border rounded p-2 focus:ring focus:ring-blue-300"
@@ -132,7 +159,9 @@
         </div>
 
         <div v-if="sectionKey === 'finalAcceptance'" class="mt-4">
-          <label class="block font-medium text-gray-700">Acceptance Notes</label>
+          <label class="block font-medium text-gray-700"
+            >Acceptance Notes</label
+          >
           <textarea
             v-model="section.acceptanceNotes"
             class="w-full border rounded p-2 focus:ring focus:ring-blue-300"
@@ -164,7 +193,12 @@ export default {
       generalDetails: [
         { label: "Customer Name", value: "" },
         { label: "Account Number", value: "" },
-        { label: "GPS Coordinates of Installation", latitude: "", longitude: "", type: "gps" },
+        {
+          label: "GPS Coordinates of Installation",
+          latitude: "",
+          longitude: "",
+          type: "gps",
+        },
         { label: "Meter Serial Number", value: "" },
         { label: "Meter Size (mm)", value: "" },
         { label: "Work Order Number", value: "" },
@@ -179,9 +213,15 @@ export default {
           fields: [
             { label: "Meter installed away from vehicular access", value: "" },
             { label: "Meter accessible for troubleshooting", value: "" },
-            { label: "Secure and tamper-resistant installation location", value: "" },
+            {
+              label: "Secure and tamper-resistant installation location",
+              value: "",
+            },
             { label: "Adequate clearance around the meter", value: "" },
-            { label: "Correct flow direction (verified by markings)", value: "" },
+            {
+              label: "Correct flow direction (verified by markings)",
+              value: "",
+            },
             { label: "Expansion coupling used where applicable", value: "" },
             { label: "Leak test completed and passed", value: "" },
             { label: "Shut-off valve present and functional", value: "" },
@@ -192,13 +232,28 @@ export default {
           label: "AMR/AMI Communication & Integration",
           expanded: false,
           fields: [
-            { label: "Communication module installed and configured", value: "" },
-            { label: "Meter successfully communicating with vendor platform", value: "" },
+            {
+              label: "Communication module installed and configured",
+              value: "",
+            },
+            {
+              label: "Meter successfully communicating with vendor platform",
+              value: "",
+            },
             { label: "Data received accurately in central system", value: "" },
-            { label: "Meter mapped correctly to Oracle billing record", value: "" },
+            {
+              label: "Meter mapped correctly to Oracle billing record",
+              value: "",
+            },
             { label: "Signal strength verified and acceptable", value: "" },
-            { label: "Cellular/concentrator coverage verified (if applicable)", value: "" },
-            { label: "Remote config confirmed (read interval, alarms, etc.)", value: "" },
+            {
+              label: "Cellular/concentrator coverage verified (if applicable)",
+              value: "",
+            },
+            {
+              label: "Remote config confirmed (read interval, alarms, etc.)",
+              value: "",
+            },
           ],
           communicationNotes: "",
         },
@@ -209,9 +264,18 @@ export default {
             { label: "Customer notified before installation", value: "" },
             { label: "Customer briefed on AMI meter functionality", value: "" },
             { label: "Work order completed and documented", value: "" },
-            { label: "Photos of meter, site, and serial number taken", value: "" },
-            { label: "Data submitted to NIO/Commercial in Excel Tracker", value: "" },
-            { label: "Work order copy given to customer (if applicable)", value: "" },
+            {
+              label: "Photos of meter, site, and serial number taken",
+              value: "",
+            },
+            {
+              label: "Data submitted to NIO/Commercial in Excel Tracker",
+              value: "",
+            },
+            {
+              label: "Work order copy given to customer (if applicable)",
+              value: "",
+            },
           ],
           engagementNotes: "",
         },
@@ -243,11 +307,17 @@ export default {
     },
     validateForm() {
       let isValid = true;
-      this.errors = { generalDetails: {}, physicalVerification: { fields: {} }, communicationIntegration: { fields: {} }, customerEngagement: { fields: {} }, finalAcceptance: { fields: {} } };
+      this.errors = {
+        generalDetails: {},
+        physicalVerification: { fields: {} },
+        communicationIntegration: { fields: {} },
+        customerEngagement: { fields: {} },
+        finalAcceptance: { fields: {} },
+      };
 
       // General Details Validation
       this.generalDetails.forEach((field, index) => {
-        if (field.type === 'gps') {
+        if (field.type === "gps") {
           if (!field.latitude || !field.longitude) {
             if (!field.latitude) {
               this.errors.generalDetails.latitude = "Latitude is required.";
