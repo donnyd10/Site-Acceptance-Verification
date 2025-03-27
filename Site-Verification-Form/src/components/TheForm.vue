@@ -441,7 +441,14 @@
     </div>
 
     <!-- Signature Section -->
-    <!-- <signature-section></signature-section> -->
+    <signature-section
+      ref="signatureComponent"
+      :signature-labels="[
+        'Customer Signature',
+        'Technician Signature',
+        'Supervisor Approval',
+      ]"
+    ></signature-section>
 
     <!-- Form submit button -->
     <div class="mt-8">
@@ -742,17 +749,34 @@ export default {
       });
 
       // Photo validation (optional)
-      if (!this.photo) {
-        this.errors.photo = "Photo is required.";
-        toast.error("Photo is required.");
-        isValid = false;
-      }
+      // if (!this.photo) {
+      //   this.errors.photo = "Photo is required.";
+      //   toast.error("Photo is required.");
+      //   isValid = false;
+      // }
 
       return isValid;
     },
 
     // Handle form submission
     submitForm() {
+      if (!this.$refs.signatureComponent.validate()) {
+        toast.error("Please complete all signature fields");
+        return;
+      }
+
+      // Get signature data
+      const signatureData = this.$refs.signatureComponent.getSignatureData();
+
+      // Include in your form submission
+      const formData = {
+        // other form data...
+        signatures: signatureData,
+      };
+      //console.log(formData);
+
+      // Submit logic...
+
       // Don't submit if validation fails
       if (!this.validateForm()) {
         return;

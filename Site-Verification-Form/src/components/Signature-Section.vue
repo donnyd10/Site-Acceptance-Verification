@@ -54,15 +54,16 @@
         <!-- Signature canvas -->
         <div class="relative border border-gray-300 rounded-lg bg-gray-50">
           <canvas
+            :id="'signatureCanvas' + index"
             :ref="'signatureCanvas' + index"
-            class="w-full h-32"
-            @mousedown="startDrawing(index, $event)"
-            @mousemove="draw(index, $event)"
-            @mouseup="stopDrawing(index)"
-            @mouseleave="stopDrawing(index)"
-            @touchstart="startDrawing(index, $event.touches[0])"
-            @touchmove="draw(index, $event.touches[0])"
-            @touchend="stopDrawing(index)"
+            class="w-full h-32 touch-none cursor-crosshair"
+            @mousedown="startDrawing($event, index)"
+            @mousemove="draw($event, index)"
+            @mouseup="endDrawing(index)"
+            @mouseleave="endDrawing(index)"
+            @touchstart.prevent="startDrawing($event.touches[0], index)"
+            @touchmove.prevent="draw($event.touches[0], index)"
+            @touchend.prevent="endDrawing(index)"
           ></canvas>
 
           <!-- Clear button -->
@@ -113,74 +114,82 @@ export default {
         { data: null, date: "" },
         { data: null, date: "" },
       ],
-      isDrawing: [false, false, false],
-      lastX: [0, 0, 0],
-      lastY: [0, 0, 0],
+      isDrawing: false,
+      currentCanvasIndex: null,
+      ctx: null,
     };
   },
   mounted() {
     this.$nextTick(() => {
-      this.setupCanvases();
+      this.initializeCanvases();
     });
   },
   methods: {
-    setupCanvases() {
+    initializeCanvases() {
+      // Initialize all canvases
       this.signatures.forEach((_, index) => {
-        const canvas = this.$refs[`signatureCanvas${index}`][0];
-        const ctx = canvas.getContext("2d");
+        const canvas = this.$refs[`signatureCanvas${index}`]?.[0];
+        if (canvas) {
+          // Set canvas dimensions
+          canvas.width = canvas.offsetWidth;
+          canvas.height = canvas.offsetHeight;
 
-        // Set proper canvas dimensions
-        canvas.width = canvas.offsetWidth;
-        canvas.height = canvas.offsetHeight;
-
-        // Set drawing style
-        ctx.strokeStyle = "#000000";
-        ctx.lineWidth = 2;
-        ctx.lineCap = "round";
-        ctx.lineJoin = "round";
+          // Set drawing style
+          const ctx = canvas.getContext("2d");
+          ctx.strokeStyle = "#000000";
+          ctx.lineWidth = 2;
+          ctx.lineCap = "round";
+          ctx.lineJoin = "round";
+        }
       });
     },
-    startDrawing(index, event) {
-      const canvas = this.$refs[`signatureCanvas${index}`][0];
+    startDrawing(event, index) {
+      const canvas = this.$refs[`signatureCanvas${index}`]?.[0];
+      if (!canvas) return;
+
+      this.isDrawing = true;
+      this.currentCanvasIndex = index;
+      this.ctx = canvas.getContext("2d");
+
       const rect = canvas.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
 
-      this.isDrawing[index] = true;
-      this.lastX[index] = event.clientX - rect.left;
-      this.lastY[index] = event.clientY - rect.top;
+      this.ctx.beginPath();
+      this.ctx.moveTo(x, y);
     },
-    draw(index, event) {
-      if (!this.isDrawing[index]) return;
+    draw(event, index) {
+      if (!this.isDrawing || index !== this.currentCanvasIndex) return;
 
-      const canvas = this.$refs[`signatureCanvas${index}`][0];
-      const ctx = canvas.getContext("2d");
+      const canvas = this.$refs[`signatureCanvas${index}`]?.[0];
+      if (!canvas || !this.ctx) return;
+
       const rect = canvas.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
 
-      const currentX = event.clientX - rect.left;
-      const currentY = event.clientY - rect.top;
-
-      ctx.beginPath();
-      ctx.moveTo(this.lastX[index], this.lastY[index]);
-      ctx.lineTo(currentX, currentY);
-      ctx.stroke();
-
-      this.lastX[index] = currentX;
-      this.lastY[index] = currentY;
+      this.ctx.lineTo(x, y);
+      this.ctx.stroke();
     },
-    stopDrawing(index) {
-      this.isDrawing[index] = false;
-      // Save the signature data
-      const canvas = this.$refs[`signatureCanvas${index}`][0];
-      this.signatures[index].data = canvas.toDataURL();
+    endDrawing(index) {
+      if (this.isDrawing && index === this.currentCanvasIndex) {
+        this.isDrawing = false;
+        const canvas = this.$refs[`signatureCanvas${index}`]?.[0];
+        if (canvas) {
+          this.signatures[index].data = canvas.toDataURL();
+        }
+      }
     },
     clearSignature(index) {
-      const canvas = this.$refs[`signatureCanvas${index}`][0];
-      const ctx = canvas.getContext("2d");
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      this.signatures[index].data = null;
+      const canvas = this.$refs[`signatureCanvas${index}`]?.[0];
+      if (canvas) {
+        const ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        this.signatures[index].data = null;
+      }
     },
     getSignatureData() {
       return this.signatures;
-      console.log(this.signatures);
     },
     validate() {
       return this.signatures.every((sig) => sig.data && sig.date);
@@ -203,11 +212,6 @@ export default {
     opacity: 1;
     transform: translateY(0);
   }
-}
-
-canvas {
-  touch-action: none;
-  cursor: crosshair;
 }
 
 .signature-field {
