@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory } from "vue-router";
 import TheFormView from "../views/TheFormView.vue";
-import TheMapView from "@/views/TheMapView.vue";
+import NavMap from "@/components/Nav-Map.vue";
 import SuccessPageView from "@/views/Success-Page-View.vue";
+import NavMapView from "@/views/Nav-Map-View.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -14,7 +15,7 @@ const router = createRouter({
     {
       path: "/Map",
       name: "theMap",
-      component: TheMapView,
+      component: NavMapView,
     },
     {
       path: "/Submitted",

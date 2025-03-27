@@ -1,5 +1,6 @@
+vue
 <template>
-  <div class="w-auto h-50 relative">
+  <div class="w-full h-screen relative">
     <div id="map" class="absolute inset-0 z-0"></div>
 
     <!-- Icon Button -->
@@ -19,17 +20,6 @@ import { onMounted, onBeforeUnmount } from "vue";
 import { MapPinIcon } from "@heroicons/vue/24/outline";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-
-const props = defineProps({
-  lat: {
-    type: Number,
-    required: true,
-  },
-  lng: {
-    type: Number,
-    required: true,
-  },
-});
 
 let map = null;
 let marker = null;

@@ -1,5 +1,6 @@
 <template>
   <success-page></success-page>
+  
 </template>
 
 <script setup>
