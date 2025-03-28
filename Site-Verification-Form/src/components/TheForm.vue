@@ -569,10 +569,7 @@ export default {
               label: "Secure and tamper-resistant installation location",
               value: "",
             },
-            {
-              label: "Adequate clearance around the meter for maintenance",
-              value: "",
-            },
+            { label: "Adequate clearance around the meter for maintenance", value: "" },
             {
               label: "Correct flow direction (verified by markings)",
               value: "",
@@ -600,10 +597,7 @@ export default {
               label: "Meter successfully communicating with vendor platform",
               value: "",
             },
-            {
-              label: "Data received accurately in Authority’s central system",
-              value: "",
-            },
+            { label: "Data received accurately in Authority’s central system", value: "" },
             {
               label: "Meter mapped correctly to Oracle billing record",
               value: "",
@@ -748,10 +742,10 @@ export default {
       return isValid;
     },
     submitForm() {
-      if (!this.$refs.signatureComponent.validate()) {
-        toast.error("Please complete all signature fields");
-        return;
-      }
+      // if (!this.$refs.signatureComponent.validate()) {
+      //   toast.error("Please complete all signature fields");
+      //   return;
+      // }
 
       const signatureData = this.$refs.signatureComponent.getSignatureData();
       const formData = {
